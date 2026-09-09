@@ -20,7 +20,7 @@ void TrajectoryBonus::activate(GameContext& context) {
     deactivate();
 }
 
-void TrajectoryBonus::draw(sf::RenderWindow& window) {
+void TrajectoryBonus::draw(sf::RenderWindow& window)const {
     if (isActive()) window.draw(shape);
 }
 

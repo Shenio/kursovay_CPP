@@ -7,12 +7,12 @@
 // Сам файл подключать здесь НЕ НАДО.
 class GameContext;
 
-class StandardBlock : public base_block {
+class unbr_block : public base_block {
 private:
     sf::RectangleShape shape;
 
 public:
-    StandardBlock(float x, float y, int hp = 1);
+    unbr_block(float x, float y, int hp = -1);
 
     void activate(GameContext& context) override;
     void draw(sf::RenderWindow& window) const override; // Убедитесь, что тут есть const!

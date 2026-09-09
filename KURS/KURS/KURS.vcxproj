@@ -148,33 +148,45 @@ sfml-system.lib</AdditionalDependencies>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="3hp_block.cpp" />
     <ClCompile Include="Ball.cpp" />
+    <ClCompile Include="base_block.cpp" />
     <ClCompile Include="Base_element.cpp" />
+    <ClCompile Include="Block_factory.cpp" />
     <ClCompile Include="BottomBonus.cpp" />
+    <ClCompile Include="Cheak_contex.cpp" />
     <ClCompile Include="element_factory.cpp" />
     <ClCompile Include="GameField.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Paddle.cpp" />
-    <ClCompile Include="SizeBlock.cpp" />
     <ClCompile Include="SizeBonus.cpp" />
     <ClCompile Include="SpeedBlock.cpp" />
+    <ClCompile Include="SpeedBonus.cpp" />
     <ClCompile Include="StandartBlock.cpp" />
+    <ClCompile Include="StickBonus.cpp" />
     <ClCompile Include="TrajectoryBonus.cpp" />
+    <ClCompile Include="unbr_block.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="3hp_block.h" />
     <ClInclude Include="Ball.h" />
+    <ClInclude Include="base_block.h" />
     <ClInclude Include="Base_element.h" />
+    <ClInclude Include="Block_factory.h" />
     <ClInclude Include="BottomBonus.h" />
+    <ClInclude Include="Cheak_contex.h" />
     <ClInclude Include="constant.h" />
     <ClInclude Include="element_factory.h" />
     <ClInclude Include="GameField.h" />
     <ClInclude Include="game_contex.h" />
     <ClInclude Include="Paddle.h" />
-    <ClInclude Include="SizeBlock.h" />
     <ClInclude Include="SizeBonus.h" />
     <ClInclude Include="SpeedBlock.h" />
+    <ClInclude Include="SpeedBonus.h" />
     <ClInclude Include="StandartBlock.h" />
+    <ClInclude Include="StickBonus.h" />
     <ClInclude Include="TrajectoryBonus.h" />
+    <ClInclude Include="unbr_block.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

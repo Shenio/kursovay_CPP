@@ -2,13 +2,12 @@
 #include "constant.h"
 #include "game_contex.h"
 
-StandardBlock::StandardBlock(float x, float y, int hp)
-    : BaseElement(x, y), health(hp)
-{
+StandardBlock::StandardBlock(float x, float y, int hp) :base_block(x, y, hp){
     shape.setSize({ BLOCK_WIDTH, BLOCK_HEIGHT });
     shape.setPosition(position);
-    shape.setFillColor(sf::Color::Red);
+    shape.setFillColor(sf::Color::Red); 
 }
+
 
 void StandardBlock::activate(GameContext& context) {
     health--;
@@ -18,7 +17,7 @@ void StandardBlock::activate(GameContext& context) {
     }
 }
 
-void StandardBlock::draw(sf::RenderWindow& window) {
+void StandardBlock::draw(sf::RenderWindow& window) const {
     if (isActive()) {
         window.draw(shape);
     }
@@ -27,3 +26,4 @@ void StandardBlock::draw(sf::RenderWindow& window) {
 sf::FloatRect StandardBlock::getBounds() const {
     return shape.getGlobalBounds();
 }
+

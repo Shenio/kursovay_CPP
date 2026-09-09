@@ -9,6 +9,6 @@ public:
     TrajectoryBonus(float x, float y);
     void update() override;
     void activate(GameContext& context) override;
-    void draw(sf::RenderWindow& window) override;
+    void draw(sf::RenderWindow& window)const override;
     sf::FloatRect getBounds() const override;
 };

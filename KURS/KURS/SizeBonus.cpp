@@ -16,11 +16,11 @@ void SizeBonus::update() {
 }
 
 void SizeBonus::activate(GameContext& context) {
-    context.paddleWidth = 180.0f; // Увеличиваем каретку (Тип 5 из ТЗ)
+    context.paddleWidth = 250.0f; // Увеличиваем каретку (Тип 5 из ТЗ)
     deactivate();
 }
 
-void SizeBonus::draw(sf::RenderWindow& window) {
+void SizeBonus::draw(sf::RenderWindow& window)const  {
     if (isActive()) window.draw(shape);
 }
 

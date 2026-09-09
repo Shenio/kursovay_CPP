@@ -20,7 +20,7 @@ void BottomBonus::activate(GameContext& context) {
     deactivate();
 }
 
-void BottomBonus::draw(sf::RenderWindow& window) {
+void BottomBonus::draw(sf::RenderWindow& window)const {
     if (isActive()) window.draw(shape);
 }
 

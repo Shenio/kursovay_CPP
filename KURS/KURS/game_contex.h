@@ -7,4 +7,7 @@ struct GameContext {
     bool& oneTimeBottom;      // Активно ли одноразовое дно
     int& playerScore;         // Очки игрока
     bool& triggerRandomTrajectory; // Флаг для бонуса 7 (изменение траектории)
+    bool& isGameStarted;
+    bool& isBallGlued;
+    float& stickyOffset;
 };

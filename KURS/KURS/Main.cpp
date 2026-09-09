@@ -5,6 +5,8 @@
 #include "Paddle.h"
 #include "Ball.h"
 #include <iostream>
+#include "Cheak_contex.h" 
+
 
 int main() {
     srand(static_cast<unsigned int>(time(nullptr)));
@@ -24,9 +26,10 @@ int main() {
     bool oneTimeBottom = false;
     int score = 0;
     bool triggerTrajectory = false;
-
+    bool isBallGlued = false;
     // ОБЯЗАТЕЛЬНО ДОБАВИТЬ ТУТ:
     bool isGameStarted = false;
+    float stickyOffset = 0;
 
     // Создаем контекст
     GameContext context{
@@ -35,7 +38,11 @@ int main() {
         ballSticky,
         oneTimeBottom,
         score,
-        triggerTrajectory
+        triggerTrajectory,
+        isGameStarted,
+        isBallGlued,
+        stickyOffset
+
     };
 
 
@@ -46,93 +53,52 @@ int main() {
             }
         }
 
-        // 1. Обновление физики и управления
         paddle.update(static_cast<float>(WINDOW_WIDTH));
-        // Проверяем, запущена ли игра (если нет — мяч ждет на ракетке)
-        if (!isGameStarted) {
+        if (!context.isGameStarted || context.isBallGlued) {
             sf::FloatRect pBounds = paddle.getBounds();
-            // Пересоздаем мяч строго по центру ракетки
-            ball = Ball(pBounds.position.x + pBounds.size.x / 2.0f, pBounds.position.y - BALL_RADIUS - 4.0f);
 
+            if (!context.isGameStarted) {
+                // Логика до старта: держим мяч строго по центру
+                ball = Ball(pBounds.position.x + pBounds.size.x / 2.0f, pBounds.position.y - BALL_RADIUS - 4.0f);
+            }
+            else if (context.isBallGlued) {
+                // Логика прилипания во время игры: плавно двигаем за ракеткой
+                ball.setPosition(pBounds.position.x + context.stickyOffset, pBounds.position.y - BALL_RADIUS - 4.0f);
+            }
+
+            // Логика запуска по кнопке Space
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) {
-                isGameStarted = true;
+                if (!context.isGameStarted) {
+                    context.isGameStarted = true;
+                    float randomAngle = -(3.14159f / 4.0f + (rand() % 100 / 100.0f) * (3.14159f / 2.0f));
+                    ball.setRandomAngle(randomAngle);
+
+                }
+                else if (context.isBallGlued) {
+                    context.isBallGlued = false; // Отлепляем мяч
+
+                    float randomAngle = -(3.14159f / 4.0f + (rand() % 100 / 100.0f) * (3.14159f / 2.0f));
+                    ball.setRandomAngle(randomAngle);
+                }
             }
         }
 
         else {
-            // Если бонус траектории был пойман (Тип 7)
-            if (context.triggerRandomTrajectory) {
-                context.triggerRandomTrajectory = false;
 
-                // Генерируем случайный угол в радианах (примерно от 45 до 135 градусов, чтобы летел вверх)
-                float randomAngle = -(3.14159f / 4.0f + (rand() % 100 / 100.0f) * (3.14159f / 2.0f));
-                ball.setRandomAngle(randomAngle); // Этот метод добавим в класс Ball ниже
-            }
+            Cheak_contex::Chek(context, ball, paddle);
 
-            ball.setSpeedMultiplier(context.ballSpeed);
-
-            // Логика падения и одноразового дна (Тип 6)
-            if (ball.update(static_cast<float>(WINDOW_WIDTH), static_cast<float>(WINDOW_HEIGHT))) {
-                if (context.oneTimeBottom) {
-                    ball.bounceY();
-                    context.oneTimeBottom = false; // Дно использовано
-                }
-                else {
-                    isGameStarted = false;
-                    context.ballSpeed = 1.0f;
-                    context.paddleWidth = 120.0f;
-                }
-            }
         }
 
 
         field.update();
 
-        // 2. Обработка коллизий с ракеткой
-                // 2. Обработка коллизий с ракеткой
-        if (ball.getBounds().findIntersection(paddle.getBounds())) {
-            sf::FloatRect pBounds = paddle.getBounds();
-            sf::FloatRect bBounds = ball.getBounds();
 
-            // 1. Выталкиваем мяч НАД ракеткой, чтобы исключить застревание
-            ball.setPosition(bBounds.position.x, pBounds.position.y - BALL_RADIUS - 2.0f);
-
-            // 2. Находим центры мяча и ракетки по горизонтали
-            float ballCenter = bBounds.position.x + bBounds.size.x / 2.0f;
-            float paddleCenter = pBounds.position.x + pBounds.size.x / 2.0f;
-
-            // 3. Вычисляем относительную точку удара (от -1.0 на левом краю до 1.0 на правом)
-            float relativeHitPos = (ballCenter - paddleCenter) / (pBounds.size.x / 2.0f);
-
-            // Ограничиваем значения, чтобы они не выходили за пределы [-1, 1]
-            if (relativeHitPos < -1.0f) relativeHitPos = -1.0f;
-            if (relativeHitPos > 1.0f)  relativeHitPos = 1.0f;
-
-            // 4. Задаем максимальный угол отклонения от вертикали (около 60 градусов)
-            float maxAngle = 60.0f * (3.14159f / 180.0f);
-            float hitAngle = relativeHitPos * maxAngle;
-
-            // 5. Передаем новый угол в мяч (угол hitAngle откладывается от вертикали вверх)
-            // Новый вектор направления полета:
-            float speed = sqrt(ball.getVelocity().x * ball.getVelocity().x + ball.getVelocity().y * ball.getVelocity().y);
-
-            // Задаем компоненты скорости (sin дает смещение по X, а -cos направляет строго ВВЕРХ)И
-            ball.setCustomVelocity(sin(hitAngle) * speed, -cos(hitAngle) * speed);
-        }
-
-
-
-
-        // 3. Обработка коллизий с элементами поля (блоки и бонусы)
-        // Если мяч касается блока, блок через context начислит очки и разрушится
         sf::FloatRect ballBounds = ball.getBounds();
-        field.checkCollisions(ballBounds, context);
+        field.checkCollisions_ball(ball,ballBounds,context);
 
-        // Также проверяем, не поймала ли ракетка падающий бонус
         sf::FloatRect paddleBounds = paddle.getBounds();
-        field.checkCollisions(paddleBounds, context);
+        field.checkCollisions_padel(paddleBounds, context);
 
-        // Применяем изменения из контекста (если бонус сработал)
         paddle.setWidth(currentPaddleWidth);
 
         // 4. Отрисовка кадра

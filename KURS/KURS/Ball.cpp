@@ -37,6 +37,9 @@ void Ball::setSpeedMultiplier(float factor) {
     if (factor > 1.6f) {
         factor = 1.6f;
     }
+    if (factor < 0.8f) {
+        factor = 0.8f;
+    }
 
     float angle = atan2(velocity.y, velocity.x);
     // Берем уменьшенную базовую скорость, чтобы играть было комфортно
@@ -77,6 +80,51 @@ void Ball::setRandomAngle(float angleRadians) {
 void Ball::setCustomVelocity(float vx, float vy) {
     velocity.x = vx;
     velocity.y = vy;
+}
+
+
+
+
+
+void Ball::handleBlockCollision(const sf::FloatRect& blockBounds) {
+    sf::FloatRect ballBounds = getBounds();
+
+    // Вычисляем пересечение (нахлест) между мячом и блоком
+    float overlapLeft = ballBounds.position.x + ballBounds.size.x - blockBounds.position.x;
+    float overlapRight = blockBounds.position.x + blockBounds.size.x - ballBounds.position.x;
+    float overlapTop = ballBounds.position.y + ballBounds.size.y - blockBounds.position.y;
+    float overlapBottom = blockBounds.position.y + blockBounds.size.y - ballBounds.position.y;
+
+    // Находим минимальную глубину проникновения, чтобы понять сторону удара
+    float minOverlapX = (overlapLeft < overlapRight) ? overlapLeft : overlapRight;
+    float minOverlapY = (overlapTop < overlapBottom) ? overlapTop : overlapBottom;
+
+    if (minOverlapX < minOverlapY) {
+        // Удар пришелся сбоку (слева или справа)
+        bounceX();
+
+        // Выталкиваем мяч из блока во избежание залипания
+        sf::Vector2f pos = shape.getPosition();
+        if (overlapLeft < overlapRight) {
+            shape.setPosition({ blockBounds.position.x - BALL_RADIUS, pos.y }); // Выталкиваем влево
+        }
+        else {
+            shape.setPosition({ blockBounds.position.x + blockBounds.size.x + BALL_RADIUS, pos.y }); // Выталкиваем вправо
+        }
+    }
+    else {
+        // Удар пришелся сверху или снизу
+        bounceY();
+
+        // Выталкиваем мяч из блока
+        sf::Vector2f pos = shape.getPosition();
+        if (overlapTop < overlapBottom) {
+            shape.setPosition({ pos.x, blockBounds.position.y - BALL_RADIUS }); // Выталкиваем вверх
+        }
+        else {
+            shape.setPosition({ pos.x, blockBounds.position.y + blockBounds.size.y + BALL_RADIUS }); // Выталкиваем вниз
+        }
+    }
 }
 
 

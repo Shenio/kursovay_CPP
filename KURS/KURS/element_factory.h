@@ -5,11 +5,12 @@
 class ElementFactory {
 public:
     enum class Type {
-        Standard,
-        SizeBlock, // Наш блок скорости (из прошлых шагов)
         SizeBonus,
         BottomBonus,     // ТИП 6
-        TrajectoryBonus  // ТИП 7
+        TrajectoryBonus,  // ТИП 7
+        SpeedBonus,
+        StickBonus
+
     };
 
     static std::unique_ptr<BaseElement> createElement(Type type, float x, float y);

@@ -2,12 +2,15 @@
 #include <vector>
 #include <memory>
 #include "Base_element.h"
+#include"base_block.h"
 #include "game_contex.h"
 
+class Ball;
 class GameField {
 private:
     // Хранение элементов по указателю базового класса (полиморфизм)
     std::vector<std::unique_ptr<BaseElement>> elements;
+    std::vector<std::unique_ptr<base_block>> elements_block;
 
 public:
     GameField() = default;
@@ -16,7 +19,8 @@ public:
     void initLevel();
 
     // Проверка коллизий с шариком или кареткой
-    void checkCollisions(const sf::FloatRect& objectBounds, GameContext& context);
+    void checkCollisions_padel(const sf::FloatRect& objectBounds, GameContext& context);
+    void checkCollisions_ball(Ball& ball, const sf::FloatRect& objectBounds, GameContext& context);
 
     // Обновление состояния элементов (например, падение бонусов)
     void update();

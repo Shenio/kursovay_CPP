@@ -20,4 +20,7 @@ public:
     sf::Vector2f getVelocity() const { return velocity; }
     void setCustomVelocity(float vx, float vy);
 
+
+    void handleBlockCollision(const sf::FloatRect& blockBounds);
+
 };

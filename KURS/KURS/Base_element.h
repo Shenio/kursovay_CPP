@@ -20,7 +20,7 @@ public:
     virtual void update() {}
 
     // Отрисовка элемента на экране
-    virtual void draw(sf::RenderWindow& window) = 0;
+    virtual void draw(sf::RenderWindow& window) const = 0;
 
     // Получение границ для проверки коллизий
     virtual sf::FloatRect getBounds() const = 0;
